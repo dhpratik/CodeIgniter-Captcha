@@ -16,7 +16,7 @@ Captcha spark library is based on CodeIgniter's core 'captcha' helper with addit
 
 ## Requirements
 
-* CodeIgniter 2.0.x
+* CodeIgniter 2.0.3
 
 ## Dependencies
 
