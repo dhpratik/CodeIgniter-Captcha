@@ -6,29 +6,20 @@ if (!defined('BASEPATH'))
 /**
  * Name:  Captcha
  *
+ * Version: 1.1.0
+ *
  * Author: Nachhatar Singh (Azoxy)
- *
  * Location: https://github.com/azoxy/CodeIgniter-Captcha
- *
- * Description:  Captcha spark library is based on CodeIgniter's core 'captcha' helper with additional features like:
- *
- * Better configuration management.
- * Use of Google's simple captcha words database.
- * Easy to validate/check captcha.
- * Immediate remove validated words to prevent reuse.
- * Modified code for cleanup of expired captcha images/records.
- * Minimal code for controllers and views (see example).
- *
+ * 
  */
-
 class Captcha {
 
-    public $config;
     public $html_data;
-    public $CI;
-    public $debug;
-    public $expiration;
-    public $current_time;
+    private $debug;
+    private $config;
+    private $CI;
+    private $expiration;
+    private $current_time;
 
     /**
      * Captcha::construct()
@@ -36,6 +27,7 @@ class Captcha {
      * @param array $param
      */
     public function __construct($param = array()) {
+
         $this->CI = &get_instance();
 
         $this->CI->load->library('session');
@@ -55,16 +47,20 @@ class Captcha {
                 }
             }
         }
+
         $this->html_data = array(
             'src' => '',
             'width' => $this->config['img_width'],
             'height' => $this->config['img_height'],
             'border' => 0,
             'alt' => '',
-            );
+        );
+
         $this->expiration = time() - $this->config['expiration'];
+
         list($usec, $sec) = explode(" ", microtime());
-        $this->current_time = ((float)$usec + (float)$sec);
+        $this->current_time = ((float) $usec + (float) $sec);
+
         $this->clean();
     }
 
@@ -74,6 +70,7 @@ class Captcha {
      * @return bool
      */
     public function create() {
+
         if (empty($this->config['img_path']) || empty($this->config['img_url'])) {
             $this->debug = 'img_path or img_url is empty';
             return FALSE;
@@ -94,23 +91,25 @@ class Captcha {
             return FALSE;
         }
 
-        // -----------------------------------
-        //  Check available fonts
-        // -----------------------------------
+        /**
+         * Check available fonts
+         */
         $fonts = array();
-        if ($handle = opendir($this->config['font_path'])) {
+        $handle = opendir($this->config['font_path']);
+        if ($handle) {
             while (false !== ($file = readdir($handle))) {
                 if ($file != "." && $file != ".." && $file != "index.html") {
-                    if (substr(strrchr(strtolower($file), "."), 1) == 'ttf')
+                    if (substr(strrchr(strtolower($file), "."), 1) == 'ttf') {
                         $fonts[] = $file;
+                    }
                 }
             }
             @closedir($handle);
         }
 
-        // -----------------------------------
-        //  Check font_path
-        // -----------------------------------
+        /**
+         * Check font_path
+         */
         $font_path = $this->config['font_path'] . $fonts[rand(0, (count($fonts) - 1))];
         $use_font = ($font_path != '' && file_exists($font_path) && function_exists('imagettftext')) ? TRUE : FALSE;
 
@@ -120,64 +119,59 @@ class Captcha {
             $this->config['img_height'] = 30;
         }
 
-        // -----------------------------------
-        // Do we have a "word" yet?
-        // -----------------------------------
+        /**
+         * Do we have a "word" yet?
+         */
         if ($this->config['word'] == '') {
             $this->config['word'] = $this->generate_word();
         }
 
-        // -----------------------------------
-        // Determine angle and position
-        // -----------------------------------
+        /**
+         * Determine angle and position
+         */
         $length = strlen($this->config['word']);
         $angle = ($length >= 6) ? rand(-($length - 6), ($length - 6)) : 0;
         $x_axis = rand(6, (360 / $length) - 16);
         $y_axis = ($angle >= 0) ? rand($this->config['img_height'], $this->config['img_width']) : rand(6, $this->config['img_height']);
 
-        // -----------------------------------
-        // Create image
-        // -----------------------------------
-        // PHP.net recommends imagecreatetruecolor(), but it isn't always available
+        /**
+         * Create image
+         *
+         * PHP.net recommends imagecreatetruecolor(), but it isn't always available
+         */
         if (function_exists('imagecreatetruecolor')) {
             $im = imagecreatetruecolor($this->config['img_width'], $this->config['img_height']);
-        }
-        else {
+        } else {
             $im = imagecreate($this->config['img_width'], $this->config['img_height']);
         }
 
-        // -----------------------------------
-        //  Assign colors
-        // -----------------------------------
-        $bg_color = imagecolorallocate($im, 255, 255, 255); // White
-        $border_color = imagecolorallocate($im, 204, 204, 204); // Light Gray
-        $text_colors = array(
-            array(
-                27,
-                78,
-                181), // Blue
-            array(
-                22,
-                163,
-                35), // Green
-            array(
-                214,
-                36,
-                7), // Red
-            );
-        $text_color_select = rand(0, (count($text_colors) - 1));
-        $text_color = imagecolorallocate($im, $text_colors[$text_color_select][0], $text_colors[$text_color_select][1], $text_colors[$text_color_select][2]);
-        $grid_color = imagecolorallocate($im, 240, 240, 240); // Very Light Gray
-        $shadow_color = imagecolorallocate($im, 240, 240, 240); // Very Light Gray
+        /**
+         * Assign colors
+         */
+        $rgb = $this->config['background_color'];
+        $bg_color = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
 
-        // -----------------------------------
-        //  Create the rectangle
-        // -----------------------------------
+        $rgb = $this->config['border_color'];
+        $border_color = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
+
+        $grid_color = array();
+        foreach ($this->config['distortion_lines_color'] as $rgb) {
+            $grid_color[] = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
+        }
+
+        $text_color = array();
+        foreach ($this->config['text_colors'] as $rgb) {
+            $text_color[] = imagecolorallocate($im, $rgb[0], $rgb[1], $rgb[2]);
+        }
+
+        /**
+         * Create the rectangle
+         */
         ImageFilledRectangle($im, 0, 0, $this->config['img_width'], $this->config['img_height'], $bg_color);
 
-        // -----------------------------------
-        //  Create the spiral pattern
-        // -----------------------------------
+        /**
+         * Create the spiral pattern
+         */
         $theta = 1;
         $thetac = 7;
         $radius = 16;
@@ -192,19 +186,18 @@ class Captcha {
             $rad1 = $radius * (($i + 1) / $points);
             $x1 = ($rad1 * cos($theta)) + $x_axis;
             $y1 = ($rad1 * sin($theta)) + $y_axis;
-            imageline($im, $x, $y, $x1, $y1, $grid_color);
+            imageline($im, $x, $y, $x1, $y1, $grid_color[rand(0, count($grid_color) - 1)]);
             $theta = $theta - $thetac;
         }
 
-        // -----------------------------------
-        //  Write the text
-        // -----------------------------------
+        /**
+         * Write the text
+         */
         if ($use_font == FALSE) {
             $font_size = 6;
             $x = rand(0, $this->config['img_width'] / ($length / 3));
             $y = 0;
-        }
-        else {
+        } else {
             $font_size = 18;
             $x = rand(0, $this->config['img_width'] / ($length / 1.5));
             $y = $font_size + 2;
@@ -212,34 +205,34 @@ class Captcha {
         for ($i = 0; $i < strlen($this->config['word']); $i++) {
             if ($use_font == FALSE) {
                 $y = rand(0, $this->config['img_height'] / 2);
-                imagestring($im, $font_size, $x, $y, substr($this->config['word'], $i, 1), $text_color);
+                imagestring($im, $font_size, $x, $y, substr($this->config['word'], $i, 1), $text_color[rand(0, count($text_color) - 1)]);
                 $x += ($font_size * 2);
-            }
-            else {
+            } else {
                 $y = rand($this->config['img_height'] / 2, $this->config['img_height'] - 3);
-                imagettftext($im, $font_size, $angle, $x, $y, $text_color, $font_path, substr($this->config['word'], $i, 1));
+                imagettftext($im, $font_size, $angle, $x, $y, $text_color[rand(0, count($text_color) - 1)], $font_path, substr($this->config['word'], $i, 1));
                 $x += $font_size;
             }
         }
 
-        // -----------------------------------
-        //  Create the border
-        // -----------------------------------
+        /**
+         * Create the border
+         */
         imagerectangle($im, 0, 0, $this->config['img_width'] - 1, $this->config['img_height'] - 1, $border_color);
 
-        // -----------------------------------
-        //  Generate the image
-        // -----------------------------------
+        /**
+         * Generate the image
+         */
         $img_name = $this->current_time . '.jpg';
         imagejpeg($im, $this->config['img_path'] . $img_name);
-
         imagedestroy($im);
+
         $this->html_data['src'] = $this->config['img_url'] . $img_name;
 
         $data = array(
             'captcha_time' => $this->current_time,
             'ip_address' => $this->CI->input->ip_address(),
-            'word' => $this->config['word']);
+            'word' => $this->config['word']
+        );
         $this->CI->captcha_model->store($data);
 
         return TRUE;
@@ -252,14 +245,18 @@ class Captcha {
      * @return bool
      */
     public function check($post_word = '') {
+
         if (empty($post_word)) {
             return FALSE;
         }
-        $post_word = strtoupper($post_word);
+
+        if ($this->config['captcha_word_uppercase']) {
+            $post_word = strtoupper($post_word);
+        }
+
         if ($this->CI->captcha_model->check($post_word, $this->expiration) == 0) {
             return FALSE;
-        }
-        else {
+        } else {
             $this->CI->captcha_model->remove_single($post_word);
             return TRUE;
         }
@@ -269,10 +266,12 @@ class Captcha {
      * Captcha::clean()
      */
     private function clean() {
+
         $this->CI->captcha_model->remove_expired($this->expiration);
-        // -----------------------------------
-        // Remove old images physically
-        // -----------------------------------
+
+        /**
+         * Remove old images physically
+         */
         $current_dir = @opendir($this->config['img_path']);
         while ($filename = @readdir($current_dir)) {
             if ($filename != "." and $filename != ".." and $filename != "index.html") {
@@ -282,6 +281,7 @@ class Captcha {
                 }
             }
         }
+
         @closedir($current_dir);
     }
 
@@ -291,13 +291,24 @@ class Captcha {
      * @return string
      */
     private function generate_word() {
-        $word = $this->CI->captcha_model->get_word();
+
+        if (!$this->config['generate_random_word']) {
+            $word = $this->CI->captcha_model->get_word();
+        }
+
         if (empty($word)) {
-            $pool = '0123456789';
+            $pool = $this->config['random_word_allowed_characters'];
+            $pool_length = strlen($pool);
             for ($i = 0; $i < 8; $i++) {
-                $word .= substr($pool, mt_rand(0, strlen($pool) - 1), 1);
+                $word .= substr($pool, mt_rand(0, $pool_length - 1), 1);
             }
         }
-        return strtoupper($word);
+
+        if ($this->config['captcha_word_uppercase']) {
+            $word = strtoupper($word);
+        }
+
+        return $word;
     }
+
 }
