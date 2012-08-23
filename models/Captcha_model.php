@@ -4,8 +4,15 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /**
- * Captcha Model
+ * Name:  Captcha_model
+ *
+ * Version: 1.1.0
+ *
+ * Author: Nachhatar Singh (Azoxy)
+ * Location: https://github.com/azoxy/CodeIgniter-Captcha
+ * 
  */
+
 class Captcha_model extends CI_Model {
 
     public $tables;
@@ -66,7 +73,8 @@ class Captcha_model extends CI_Model {
         $binds = array(
             $post_word,
             $this->input->ip_address(),
-            $expiration);
+            $expiration
+        );
         $query = $this->db->query($sql, $binds);
         $row = $query->row();
         return $row->count;
@@ -81,4 +89,5 @@ class Captcha_model extends CI_Model {
         $query = $this->db->insert_string($this->tables['data_table'], $data);
         $this->db->query($query);
     }
+
 }

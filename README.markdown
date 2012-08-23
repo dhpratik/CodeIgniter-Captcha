@@ -1,53 +1,53 @@
 # Captcha
 
+* Version : 1.1.0
+* Author : Nachhatar Singh (Azoxy)
+* Location : https://github.com/azoxy/CodeIgniter-Captcha
+
+## About
+
 Captcha spark library is based on CodeIgniter's core 'captcha' helper with additional features like:
 
-* Better configuration management.
-* Use of Google's simple captcha words database.
-* Easy to validate/check captcha.
+* Better configuration management, many options available.
+* Use of english words instead random text.
+* Easy to validate captcha response.
 * Immediate remove validated words to prevent reuse.
 * Modified code for cleanup of expired captcha images/records.
 * Minimal code for controllers and views (see example).
 
-## About
+## Minimum Requirements
 
-* Author : Nachhatar Singh (Azoxy)
-* Location : https://github.com/azoxy/CodeIgniter-Captcha
-
-## Requirements
-
-* CodeIgniter 2.0.3
-
-## Dependencies
-
-* Libraries = database, session
+* CodeIgniter v2.1.0
 
 ## Installation
 
-1. Install spark by copy files inro sparks directory.
+1. Install spark by copy files into sparks directory.
 2. Copy your additional font files to 'system/fonts' directory.
-3. Make 'images/captcha' directory to store captcha images.
-4. Import code from 'sql/INSTALL.mysql.txt' into database.
-5. Follow the example code, next.
-6. Enjoy.
+3. Create 'images/captcha' directory to store captcha images.
+4. Make sure 'images/captcha' directory is writeable.
+5. Import code from 'sql/captcha.sql' into database.
+6. Check & modify configuration 'config/captcha.php'.
+7. Follow the example code, next.
+
+Enjoy.
 
 ## Example
 
 ### Controller : Create Captcha Image
 
-    if($this->captcha->create()){
+    if ($this->captcha->create()) {
         $data['captcha'] = $this->captcha->html_data;
     } else {
         $data['captcha'] = 'Captcha : ' . $this->captcha->debug;
     }
     $this->load->view('login', $data);
 
-### Controller : Check/Validate
+### Controller : Validate Response
 
     if ($this->captcha->check($this->input->post('captcha'))) {
-    	$message = "Success";
+        $message = "Success";
     } else {
-    	$message = "Failed";
+        $message = "Failed";
     }
 
 ### View : Output Captcha Image
