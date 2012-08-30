@@ -5,6 +5,7 @@
 
 Date : Not Released
 
+* Option to enable/disable background distortion with spiral lines.
 * Option to apply gaussian blur filter.
 
 

@@ -64,8 +64,10 @@ $config['background_color'] = array(255, 255, 255); // White
 $config['border_color'] = array(204, 204, 204); // Light Gray
 
 /**
- * Captcha image, background distortion lines color (R, G, B)
+ * Use Spiral pattern/lines in the background for distortion
+ * Lines color (R, G, B)
  */
+$config['distortion_lines'] = TRUE;
 $config['distortion_lines_color'] = array(
     array(238, 238, 238), // Light Gray
     array(224, 224, 224) // Light Gray

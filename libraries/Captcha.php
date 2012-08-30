@@ -170,24 +170,26 @@ class Captcha {
         ImageFilledRectangle($im, 0, 0, $this->config['img_width'], $this->config['img_height'], $bg_color);
 
         /**
-         * Create the spiral pattern
+         * Create the spiral pattern/lines in the background for distortion
          */
-        $theta = 1;
-        $thetac = 7;
-        $radius = 16;
-        $circles = 20;
-        $points = 32;
-        for ($i = 0; $i < ($circles * $points) - 1; $i++) {
-            $theta = $theta + $thetac;
-            $rad = $radius * ($i / $points);
-            $x = ($rad * cos($theta)) + $x_axis;
-            $y = ($rad * sin($theta)) + $y_axis;
-            $theta = $theta + $thetac;
-            $rad1 = $radius * (($i + 1) / $points);
-            $x1 = ($rad1 * cos($theta)) + $x_axis;
-            $y1 = ($rad1 * sin($theta)) + $y_axis;
-            imageline($im, $x, $y, $x1, $y1, $grid_color[rand(0, count($grid_color) - 1)]);
-            $theta = $theta - $thetac;
+        if ($this->config['distortion_lines']) {
+            $theta = 1;
+            $thetac = 7;
+            $radius = 16;
+            $circles = 20;
+            $points = 32;
+            for ($i = 0; $i < ($circles * $points) - 1; $i++) {
+                $theta = $theta + $thetac;
+                $rad = $radius * ($i / $points);
+                $x = ($rad * cos($theta)) + $x_axis;
+                $y = ($rad * sin($theta)) + $y_axis;
+                $theta = $theta + $thetac;
+                $rad1 = $radius * (($i + 1) / $points);
+                $x1 = ($rad1 * cos($theta)) + $x_axis;
+                $y1 = ($rad1 * sin($theta)) + $y_axis;
+                imageline($im, $x, $y, $x1, $y1, $grid_color[rand(0, count($grid_color) - 1)]);
+                $theta = $theta - $thetac;
+            }
         }
 
         /**
