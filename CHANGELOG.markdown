@@ -1,7 +1,14 @@
 # Captcha
 
 
-## Version 1.1.0
+## Version 1.2 (planned)
+
+Date : Not Released
+
+* Option to apply gaussian blur filter.
+
+
+## Version 1.1
 
 Date : 24 August 2012
 
@@ -25,7 +32,7 @@ Date : 2 March 2012
 * Minor typo corrections.
 
 
-## Version 1.0.0
+## Version 1.0
 
 Date : 5 September 2011
 

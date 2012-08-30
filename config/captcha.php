@@ -7,19 +7,19 @@
  *
  * Author: Nachhatar Singh (Azoxy)
  * Location: https://github.com/azoxy/CodeIgniter-Captcha
- * 
+ *
  */
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /**
- * Fonts directory path 
+ * Fonts directory path
  */
 $config['font_path'] = BASEPATH . 'fonts/';
 
 /**
- * Directory path, where captcha images will store 
+ * Directory path, where captcha images will store
  */
 $config['img_url'] = 'images/captcha/';
 
@@ -32,6 +32,12 @@ $config['img_width'] = 180;
  * Captcha image height. Must be 45px minimum
  */
 $config['img_height'] = 45;
+
+/**
+ * gaussian blur filter configuracion
+ * Warning: slower image processing
+ */
+$config['apply_gaussian_blur_filter'] = TRUE;
 
 /**
  * Captcha image expiration (seconds)

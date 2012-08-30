@@ -10,7 +10,7 @@ if (!defined('BASEPATH'))
  *
  * Author: Nachhatar Singh (Azoxy)
  * Location: https://github.com/azoxy/CodeIgniter-Captcha
- * 
+ *
  */
 class Captcha {
 
@@ -212,6 +212,13 @@ class Captcha {
                 imagettftext($im, $font_size, $angle, $x, $y, $text_color[rand(0, count($text_color) - 1)], $font_path, substr($this->config['word'], $i, 1));
                 $x += $font_size;
             }
+        }
+
+        /**
+         * apply gaussian blur filter
+         */
+        if ($this->config['apply_gaussian_blur_filter'] && function_exists('imagefilter')) {
+            imagefilter($im, IMG_FILTER_GAUSSIAN_BLUR);
         }
 
         /**
