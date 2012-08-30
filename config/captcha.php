@@ -37,7 +37,7 @@ $config['img_height'] = 45;
  * gaussian blur filter configuracion
  * Warning: slower image processing
  */
-$config['apply_gaussian_blur_filter'] = TRUE;
+$config['apply_gaussian_blur_filter'] = FALSE;
 
 /**
  * Captcha image expiration (seconds)
