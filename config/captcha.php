@@ -67,7 +67,7 @@ $config['border_color'] = array(204, 204, 204); // Light Gray
  * Use Spiral pattern/lines in the background for distortion
  * Lines color (R, G, B)
  */
-$config['distortion_lines'] = TRUE;
+$config['distortion_lines'] = FALSE;
 $config['distortion_lines_color'] = array(
     array(238, 238, 238), // Light Gray
     array(224, 224, 224) // Light Gray
