@@ -7,6 +7,8 @@ Date : Not Released
 
 * Option to enable/disable background distortion with spiral lines.
 * Option to apply gaussian blur filter.
+* Option to set full physical path (img_path) to store images.
+* Option to set full URL (img_url) prefix for captcha images.
 
 
 ## Version 1.1

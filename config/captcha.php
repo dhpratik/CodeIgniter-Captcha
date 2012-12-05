@@ -21,7 +21,12 @@ $config['font_path'] = BASEPATH . 'fonts/';
 /**
  * Directory path, where captcha images will store
  */
-$config['img_url'] = 'images/captcha/';
+$config['img_path'] = FCPATH . 'images/captcha/';
+
+/**
+ * Image (IMG) tag source (SRC) prefix url
+ */
+$config['img_url'] = '/images/captcha/';
 
 /**
  * Captcha image width. Must be 180px minimum
