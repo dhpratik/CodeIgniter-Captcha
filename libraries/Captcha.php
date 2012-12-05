@@ -15,7 +15,7 @@ if (!defined('BASEPATH'))
 class Captcha {
 
     public $html_data;
-    private $debug;
+    public $debug;
     private $config;
     private $CI;
     private $expiration;
@@ -36,8 +36,6 @@ class Captcha {
         $this->CI->load->config('captcha', TRUE);
         $this->config = $this->CI->config->item('captcha');
 
-        $this->config['img_path'] = './' . $this->config['img_url'];
-        $this->config['img_url'] = $this->CI->config->item('base_url') . $this->config['img_url'];
         $this->config['word'] = $this->generate_word();
 
         if (is_array($param)) {
